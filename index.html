@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Información del Producto | GS1 Digital Link</title>
+    <style>
+        :root {
+            --primary-color: #002C6C; /* Azul institucional */
+            --accent-color: #0072CE;
+            --bg-color: #F4F6F9;
+            --text-color: #333;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            max-width: 450px;
+            width: 100%;
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #EEE;
+            padding-bottom: 16px;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            font-size: 1.25rem;
+            color: var(--primary-color);
+            margin: 0 0 8px 0;
+        }
+        .batch-info {
+            background: #EBF3FA;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+        }
+        .batch-info p { margin: 4px 0; }
+        .btn-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: white;
+            border: 2px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 14px 18px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+        .btn:hover {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        .footer {
+            margin-top: 24px;
+            text-align: center;
+            font-size: 0.75rem;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1 id="product-name">Cargando producto...</h1>
+        <span style="font-size:0.8rem; color:#666;">Estándar GS1 Digital Link</span>
+    </div>
+
+    <!-- Trazabilidad del Lote extraída del QR -->
+    <div class="batch-info" id="traceability-box">
+        <p><strong>GTIN (01):</strong> <span id="gtin-val">-</span></p>
+        <p><strong>Lote (10):</strong> <span id="batch-val">-</span></p>
+        <p><strong>Caducidad (17):</strong> <span id="exp-val">-</span></p>
+    </div>
+
+    <p style="font-size: 0.9rem; font-weight: bold; margin-bottom: 12px;">Seleccione la información que desea consultar:</p>
+
+    <!-- Menú de opciones para el usuario -->
+    <div class="btn-list">
+        <a id="link-prospecto" href="#" class="btn" target="_blank">
+            📄 Prospecto / Ficha Técnica <span>➔</span>
+        </a>
+        <a id="link-cert" href="#" class="btn" target="_blank">
+            📜 Certificado de Análisis / Calidad <span>➔</span>
+        </a>
+        <a id="link-uso" href="#" class="btn" target="_blank">
+            🎥 Instrucciones / Modo de Uso <span>➔</span>
+        </a>
+        <a id="link-farma" href="#" class="btn" target="_blank">
+            ⚠️ Reportar Evento Adverso <span>➔</span>
+        </a>
+    </div>
+
+    <div class="footer">
+        Verificación Sanitaria y Trazabilidad Garantizada
+    </div>
+</div>
+
+<script>
+    // Extraer variables desde la URL según el estándar GS1
+    // Ejemplo de URL: https://tudominio.github.io/01/07501234567890/10/LOTE123/17/261231
+    const pathSegments = window.location.pathname.split('/');
+    
+    let gtin = "No detectado";
+    let lote = "No detectado";
+    let caducidad = "No detectada";
+
+    for (let i = 0; i < pathSegments.length; i++) {
+        if (pathSegments[i] === "01") gtin = pathSegments[i+1] || gtin;
+        if (pathSegments[i] === "10") lote = pathSegments[i+1] || lote;
+        if (pathSegments[i] === "17") caducidad = pathSegments[i+1] || caducidad;
+    }
+
+    document.getElementById('gtin-val').textContent = gtin;
+    document.getElementById('batch-val').textContent = lote;
+    document.getElementById('exp-val').textContent = caducidad;
+
+    // Configurar enlaces (puedes cambiarlos por tus propios documentos cargados en Google Drive o GitHub)
+    document.getElementById('product-name').textContent = "Dispositivo / Fármaco GTIN: " + gtin;
+    document.getElementById('link-prospecto').href = "https://www.medscape.com/ai-search"; 
+    document.getElementById('link-cert').href = "https://drive.google.com"; // Enlace a carpeta de Drive o PDF
+    document.getElementById('link-uso').href = "https://youtube.com";
+    document.getElementById('link-farma').href = "https://formularios.com/farmacovigilancia";
+</script>
+
+</body>
+</html>
