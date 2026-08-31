@@ -3,144 +3,445 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Información del Producto | GS1 Digital Link</title>
+    <title>Trazabilidad Sanitaria - GS1 Digital Link</title>
     <style>
         :root {
-            --primary-color: #002C6C; /* Azul institucional */
-            --accent-color: #0072CE;
-            --bg-color: #F4F6F9;
-            --text-color: #333;
+            --primary-color: #008080;
+            --secondary-color: #003366;
+            --bg-color: #eef2f6;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --feedback-bg: #f0f9ff;
+            --feedback-border: #bae6fd;
+            --feedback-color: #0369a1;
         }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             background-color: var(--bg-color);
-            color: var(--text-color);
             margin: 0;
-            padding: 20px;
+            padding: 8px;
             display: flex;
             justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
+
         .container {
-            max-width: 450px;
             width: 100%;
-            background: white;
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            max-width: 500px;
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 8px 20px -5px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
         }
-        .header {
-            text-align: center;
-            border-bottom: 2px solid #EEE;
-            padding-bottom: 16px;
-            margin-bottom: 20px;
+
+        .banner-container {
+            width: 100%;
+            background-color: #ffffff;
+            border-bottom: 1px solid var(--border-color);
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
-        .header h1 {
-            font-size: 1.25rem;
-            color: var(--primary-color);
-            margin: 0 0 8px 0;
+
+        .banner {
+            width: 100%;
+            height: auto;
+            max-height: 120px;
+            object-fit: cover;
+            object-position: center;
+            display: block;
         }
-        .batch-info {
-            background: #EBF3FA;
+
+        .content {
             padding: 10px 14px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            margin-bottom: 20px;
         }
-        .batch-info p { margin: 4px 0; }
-        .btn-list {
+
+        h2 {
+            color: var(--secondary-color);
+            text-align: center;
+            font-size: 0.98rem;
+            font-weight: 700;
+            margin: 0 0 2px 0;
+            line-height: 1.15;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.68rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        /* Cuadro de Datos */
+        .info-box {
+            background-color: #f8fafc;
+            border-radius: 6px;
+            padding: 8px 10px;
+            margin-bottom: 8px;
+            border: 1px solid var(--border-color);
+            font-size: 0.75rem;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 2.5px 0;
+            border-bottom: 1px dashed #e2e8f0;
+            gap: 6px;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .info-row:first-child {
+            padding-top: 0;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #334155;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .info-val {
+            color: #0f172a;
+            font-weight: 500;
+            text-align: right;
+            word-break: break-word;
+        }
+
+        .info-val-highlight {
+            color: var(--secondary-color);
+            font-weight: 700;
+        }
+
+        /* Badge de Categoría Detectada */
+        .category-badge-container {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #e0f2fe;
+            border: 1px solid #bae6fd;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 0.72rem;
+        }
+
+        .category-title {
+            font-weight: 700;
+            color: #0369a1;
+        }
+
+        .category-name {
+            font-weight: 700;
+            color: #0284c7;
+            text-transform: uppercase;
+        }
+
+        .section-label {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        /* Disposición dinámicamente filtrable */
+        .columns-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .columns-container.single-col {
+            grid-template-columns: 1fr;
+        }
+
+        .column {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 5px;
         }
+
+        .col-title {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            text-transform: uppercase;
+            letter-spacing: 0.2px;
+            padding-bottom: 2px;
+            border-bottom: 1.5px solid var(--primary-color);
+            margin-bottom: 2px;
+            white-space: nowrap;
+        }
+
         .btn {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background-color: white;
-            border: 2px solid var(--accent-color);
-            color: var(--accent-color);
-            padding: 14px 18px;
-            border-radius: 8px;
+            padding: 6px 8px;
+            border: 1px solid var(--primary-color);
+            border-radius: 5px;
+            background-color: #fff;
+            color: var(--primary-color);
             text-decoration: none;
             font-weight: 600;
-            font-size: 0.95rem;
-            transition: all 0.2s ease;
+            font-size: 0.70rem;
+            transition: all 0.15s ease-in-out;
+            cursor: pointer;
+            box-sizing: border-box;
+            width: 100%;
+            min-height: 36px;
         }
+
         .btn:hover {
-            background-color: var(--accent-color);
-            color: white;
+            background-color: #f0fdfa;
+            border-color: #006666;
+            transform: translateY(-1px);
         }
-        .footer {
-            margin-top: 24px;
+
+        .btn-full {
+            grid-column: 1 / -1;
+            min-height: 34px;
+        }
+
+        /* Caja de Opinión / Feedback */
+        .feedback-box {
+            grid-column: 1 / -1;
+            background-color: var(--feedback-bg);
+            border: 1px solid var(--feedback-border);
+            border-radius: 6px;
+            padding: 8px 10px;
+            margin-top: 2px;
             text-align: center;
-            font-size: 0.75rem;
-            color: #888;
+        }
+
+        .feedback-text {
+            font-size: 0.68rem;
+            color: #1e293b;
+            margin-bottom: 6px;
+            line-height: 1.25;
+            font-weight: 500;
+        }
+
+        .btn-feedback {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            background-color: var(--secondary-color);
+            color: #ffffff;
+            padding: 6px 12px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 0.68rem;
+            font-weight: 600;
+            transition: background-color 0.15s ease;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .btn-feedback:hover {
+            background-color: #002244;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            margin-top: 8px;
+            font-weight: 500;
+        }
+
+        .hidden {
+            display: none !important;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header">
-        <h1 id="product-name">Cargando producto...</h1>
-        <span style="font-size:0.8rem; color:#666;">Estándar GS1 Digital Link</span>
+    <!-- Banner Institucional -->
+    <div class="banner-container">
+        <img src="banner.png" alt="Hospital San Juan de Dios - CDT" class="banner">
     </div>
 
-    <!-- Trazabilidad del Lote extraída del QR -->
-    <div class="batch-info" id="traceability-box">
-        <p><strong>GTIN (01):</strong> <span id="gtin-val">-</span></p>
-        <p><strong>Lote (10):</strong> <span id="batch-val">-</span></p>
-        <p><strong>Caducidad (17):</strong> <span id="exp-val">-</span></p>
-    </div>
+    <div class="content">
+        <!-- Título principal -->
+        <h2 id="product-title">Fármacos, Insumos y Dispositivos Médicos</h2>
+        <div class="subtitle">ESTÁNDAR GS1 DIGITAL LINK</div>
 
-    <p style="font-size: 0.9rem; font-weight: bold; margin-bottom: 12px;">Seleccione la información que desea consultar:</p>
+        <!-- Cuadro de Datos -->
+        <div class="info-box">
+            <div class="info-row">
+                <span class="info-label">Descripción / Glosa:</span>
+                <span class="info-val info-val-highlight" id="glosa-val">PARACETAMOL 500 MG COMPRIMIDOS</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">GTIN (01):</span>
+                <span class="info-val" id="gtin-val">07891234567890</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Código Interno:</span>
+                <span class="info-val" id="cod-interno-val">INT-55412</span>
+            </div>
+            <div class="info-row" id="row-isp">
+                <span class="info-label">Registro Sanitario ISP:</span>
+                <span class="info-val" id="isp-val">F-12345/22</span>
+            </div>
+            <div class="info-row" id="row-reff">
+                <span class="info-label">Ref. Fabricante:</span>
+                <span class="info-val" id="reff-val">REF-99820-X</span>
+            </div>
+        </div>
 
-    <!-- Menú de opciones para el usuario -->
-    <div class="btn-list">
-        <a id="link-prospecto" href="#" class="btn" target="_blank">
-            📄 Prospecto / Ficha Técnica <span>➔</span>
-        </a>
-        <a id="link-cert" href="#" class="btn" target="_blank">
-            📜 Certificado de Análisis / Calidad <span>➔</span>
-        </a>
-        <a id="link-uso" href="#" class="btn" target="_blank">
-            🎥 Instrucciones / Modo de Uso <span>➔</span>
-        </a>
-        <a id="link-farma" href="#" class="btn" target="_blank">
-            ⚠️ Reportar Evento Adverso <span>➔</span>
-        </a>
-    </div>
+        <!-- Identificador de Categoría Detectada -->
+        <div class="category-badge-container" id="category-container">
+            <span class="category-title">🏷️ Categoría de Producto:</span>
+            <span class="category-name" id="category-val">FÁRMACO</span>
+        </div>
 
-    <div class="footer">
-        Verificación Sanitaria y Trazabilidad Garantizada
+        <div class="section-label">Información disponible para consulta:</div>
+
+        <!-- Contenedor Dinámico de Columnas -->
+        <div class="columns-container" id="columns-wrapper">
+            <!-- Columna Fármacos -->
+            <div class="column" id="col-farmacos">
+                <div class="col-title">💊 Fármacos</div>
+                <a href="#" class="btn">
+                    <span>📑 Ficha Técnica Registro ISP</span>
+                    <span>➔</span>
+                </a>
+                <a href="#" class="btn">
+                    <span>📖 Prospecto Ficha Vademécum</span>
+                    <span>➔</span>
+                </a>
+                <a href="#" class="btn">
+                    <span>🧪 Principio Activo - Medscape</span>
+                    <span>➔</span>
+                </a>
+            </div>
+
+            <!-- Columna Insumos y Dispositivos Médicos -->
+            <div class="column" id="col-insumos">
+                <div class="col-title">🩺 Insumos y Dispositivos Médicos</div>
+                <a href="#" class="btn">
+                    <span>📑 Ficha Técnica Fabricante</span>
+                    <span>➔</span>
+                </a>
+                <a href="#" class="btn">
+                    <span>🏛️ Ficha Técnica / Registro FDA</span>
+                    <span>➔</span>
+                </a>
+                <a href="#" class="btn">
+                    <span>📖 Prospecto / Modo de Uso</span>
+                    <span>➔</span>
+                </a>
+            </div>
+
+            <!-- Botón Ancho Completo Unificado: Alertas y Recalls -->
+            <a href="#" class="btn btn-full">
+                <span>🚨 Alertas Sanitarias (ISP) y Recalls (FDA / ECRI)</span>
+                <span>➔</span>
+            </a>
+
+            <!-- Módulo de Opinión y Solicitud de Información (Reemplaza a GS1 Pendiente) -->
+            <div class="feedback-box">
+                <div class="feedback-text">
+                    ¿Te gustaría visualizar información que actualmente no se encuentra disponible? Deja tu comentario para analizar la solicitud y nos pondremos en contacto.
+                </div>
+                <a id="btn-feedback-link" href="https://forms.google.com" target="_blank" class="btn-feedback">
+                    💬 Dejar comentario o sugerencia ➔
+                </a>
+            </div>
+        </div>
+
+        <div class="footer">
+            Verificación Sanitaria y Trazabilidad Garantizada
+        </div>
     </div>
 </div>
 
 <script>
-    // Extraer variables desde la URL según el estándar GS1
-    // Ejemplo de URL: https://tudominio.github.io/01/07501234567890/10/LOTE123/17/261231
-    const pathSegments = window.location.pathname.split('/');
+    // Script de Filtrado Automático por Categoría y Lectura Dinámica
+    const urlParams = new URLSearchParams(window.location.search);
+    const glosa = urlParams.get('glosa');
+    const gtin = urlParams.get('gtin');
+    const codInterno = urlParams.get('cod_interno');
+    const isp = urlParams.get('isp');
+    const reff = urlParams.get('reff');
     
-    let gtin = "No detectado";
-    let lote = "No detectado";
-    let caducidad = "No detectada";
+    // Parámetros dinámicos para enlace de opinión
+    const formUrl = urlParams.get('form_url');
+    const feedbackMail = urlParams.get('email');
 
-    for (let i = 0; i < pathSegments.length; i++) {
-        if (pathSegments[i] === "01") gtin = pathSegments[i+1] || gtin;
-        if (pathSegments[i] === "10") lote = pathSegments[i+1] || lote;
-        if (pathSegments[i] === "17") caducidad = pathSegments[i+1] || caducidad;
+    let tipo = urlParams.get('tipo');
+
+    if (!tipo) {
+        if (isp && isp !== 'N/A' && isp !== 'No detectado') {
+            tipo = 'farmaco';
+        } else if (reff && reff !== 'N/A' && reff !== 'No detectado') {
+            tipo = 'insumo';
+        }
     }
 
-    document.getElementById('gtin-val').textContent = gtin;
-    document.getElementById('batch-val').textContent = lote;
-    document.getElementById('exp-val').textContent = caducidad;
+    if (glosa) document.getElementById('glosa-val').innerText = glosa;
+    if (gtin) document.getElementById('gtin-val').innerText = gtin;
+    if (codInterno) document.getElementById('cod-interno-val').innerText = codInterno;
+    if (isp) document.getElementById('isp-val').innerText = isp;
+    if (reff) document.getElementById('reff-val').innerText = reff;
 
-    // Configurar enlaces (puedes cambiarlos por tus propios documentos cargados en Google Drive o GitHub)
-    document.getElementById('product-name').textContent = "Dispositivo / Fármaco GTIN: " + gtin;
-    document.getElementById('link-prospecto').href = "https://www.medscape.com/ai-search"; 
-    document.getElementById('link-cert').href = "https://drive.google.com"; // Enlace a carpeta de Drive o PDF
-    document.getElementById('link-uso').href = "https://youtube.com";
-    document.getElementById('link-farma').href = "https://formularios.com/farmacovigilancia";
+    // Configurar el enlace de opinión dinámicamente si viene especificado
+    const btnFeedback = document.getElementById('btn-feedback-link');
+    if (formUrl) {
+        btnFeedback.href = formUrl;
+    } else if (feedbackMail) {
+        btnFeedback.href = `mailto:${feedbackMail}?subject=Solicitud de Información no disponible - GTIN ${gtin || ''}&body=Estimados, me gustaría solicitar la siguiente información para el producto (${glosa || ''}):`;
+    }
+
+    // Aplicar lógica de filtrado visual
+    const colFarmacos = document.getElementById('col-farmacos');
+    const colInsumos = document.getElementById('col-insumos');
+    const wrapper = document.getElementById('columns-wrapper');
+    const catVal = document.getElementById('category-val');
+    const rowIsp = document.getElementById('row-isp');
+    const rowReff = document.getElementById('row-reff');
+
+    if (tipo === 'farmaco') {
+        catVal.innerText = 'FÁRMACO / MEDICAMENTO';
+        colInsumos.classList.add('hidden');
+        if (rowReff) rowReff.classList.add('hidden');
+        wrapper.classList.add('single-col');
+    } else if (tipo === 'insumo' || tipo === 'dispositivo') {
+        catVal.innerText = 'INSUMO / DISPOSITIVO MÉDICO';
+        colFarmacos.classList.add('hidden');
+        if (rowIsp) rowIsp.classList.add('hidden');
+        wrapper.classList.add('single-col');
+    } else {
+        catVal.innerText = 'BÚSQUEDA GENERAL / NO DEFINIDA';
+    }
 </script>
 
 </body>
