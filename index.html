@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trazabilidad Sanitaria - HSJD Digital Link</title>
+    <title>Trazabilidad Sanitaria - Digital Link</title>
     <style>
         :root {
             --primary-color: #008080;
@@ -369,7 +369,9 @@
             <!-- Módulo de Opinión y Solicitud de Información -->
             <div class="feedback-box">
                 <div class="feedback-text">
-                    ¿Te gustaría visualizar información que actualmente no se encuentra disponible? Deja tu comentario para analizar la solicitud y nos pondremos en contacto.
+                    ¿Te gustaría visualizar información que actualmente no se encuentra disponible? 
+                    </div>
+                Deja tu comentario para analizar la solicitud y nos pondremos en contacto.
                 </div>
                 <a id="btn-feedback-link" href="#" target="_blank" class="btn-feedback">
                     💬 Dejar comentario o sugerencia ➔
@@ -406,7 +408,7 @@
     
     // Parámetros de Sugerencia / Contacto
     const formUrl = urlParams.get('form_url');
-    const feedbackMail = urlParams.get('email') || 'abastecimiento@hsjd.cl';
+    const feedbackMail = urlParams.get('email') || 'mauricio.quiroz@redsalud.gob.cl';
 
     // Autodetección de Tipo si no viene especificado
     if (!tipo) {
@@ -449,14 +451,7 @@
         btnFeedback.href = formUrl;
     } else {
         const mailSubject = encodeURIComponent(`Solicitud de Información no disponible - GTIN ${gtin || ''}`);
-        const mailBody = encodeURIComponent(`Estimados,
-
-Junto con saludar, me gustaría solicitar que se habilite la siguiente información/documentación para el producto (${glosa || ''}):
-
-- Comentario / Detalle:
-
-Saludos cordiales,
-Correo de contacto: `);
+        const mailBody = encodeURIComponent(`Estimados,\n\nJunto con saludar, me gustaría solicitar que se habilite la siguiente información/documentación para el producto (${glosa || ''}):\n\n- Comentario / Detalle:\n\nSaludos cordiales,\nCorreo de contacto: `);
         btnFeedback.href = `mailto:${feedbackMail}?subject=${mailSubject}&body=${mailBody}`;
     }
 
