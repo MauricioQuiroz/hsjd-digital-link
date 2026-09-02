@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trazabilidad Sanitaria - HSJD Digital Link</title>
+    <title>Trazabilidad Sanitaria - GS1 Digital Link</title>
     <style>
         :root {
             --primary-color: #008080;
@@ -25,18 +25,19 @@
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             background-color: var(--bg-color);
             margin: 0;
-            padding: 8px;
+            padding: 12px 8px;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
         }
 
+        /* Contenedor adaptativo para todo tipo de pantallas */
         .container {
             width: 100%;
             max-width: 500px;
             background-color: var(--card-bg);
-            border-radius: 10px;
+            border-radius: 12px;
             box-shadow: 0 8px 20px -5px rgba(0, 0, 0, 0.08);
             overflow: hidden;
             border: 1px solid var(--border-color);
@@ -57,52 +58,51 @@
         .banner {
             width: 100%;
             height: auto;
-            max-height: 120px;
-            object-fit: cover;
-            object-position: center;
+            max-height: 140px;
+            object-fit: contain;
             display: block;
         }
 
         .content {
-            padding: 10px 14px;
+            padding: 12px 16px;
         }
 
         h2 {
             color: var(--secondary-color);
             text-align: center;
-            font-size: 0.98rem;
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
             font-weight: 700;
             margin: 0 0 2px 0;
-            line-height: 1.15;
+            line-height: 1.2;
         }
 
         .subtitle {
             text-align: center;
             color: var(--text-muted);
-            font-size: 0.68rem;
-            font-weight: 500;
+            font-size: clamp(0.62rem, 1.8vw, 0.72rem);
+            font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
 
-        /* Cuadro de Datos */
+        /* Cuadro de Datos Responsive */
         .info-box {
             background-color: #f8fafc;
-            border-radius: 6px;
-            padding: 8px 10px;
-            margin-bottom: 8px;
+            border-radius: 8px;
+            padding: 10px 12px;
+            margin-bottom: 10px;
             border: 1px solid var(--border-color);
-            font-size: 0.75rem;
+            font-size: clamp(0.7rem, 2vw, 0.8rem);
         }
 
         .info-row {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            padding: 2.5px 0;
+            padding: 4px 0;
             border-bottom: 1px dashed #e2e8f0;
-            gap: 6px;
+            gap: 8px;
         }
 
         .info-row:last-child {
@@ -133,89 +133,86 @@
             font-weight: 700;
         }
 
-        /* Badge de Categoría Detectada */
+        /* Badge de Categoría */
         .category-badge-container {
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             background-color: #e0f2fe;
             border: 1px solid #bae6fd;
-            padding: 5px 10px;
-            border-radius: 6px;
-            font-size: 0.72rem;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: clamp(0.68rem, 2vw, 0.78rem);
+            gap: 8px;
         }
 
         .category-title {
             font-weight: 700;
             color: #0369a1;
+            white-space: nowrap;
         }
 
         .category-name {
             font-weight: 700;
             color: #0284c7;
             text-transform: uppercase;
+            text-align: right;
         }
 
         .section-label {
-            font-size: 0.72rem;
+            font-size: clamp(0.65rem, 1.8vw, 0.72rem);
             font-weight: 600;
             color: var(--text-muted);
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             text-transform: uppercase;
             letter-spacing: 0.4px;
         }
 
-        /* Disposición dinámicamente filtrable */
+        /* Grid Dinámico de Botones */
         .columns-container {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-bottom: 6px;
-        }
-
-        .columns-container.single-col {
             grid-template-columns: 1fr;
+            gap: 8px;
+            margin-bottom: 8px;
         }
 
         .column {
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 6px;
         }
 
         .col-title {
-            font-size: 0.65rem;
+            font-size: clamp(0.65rem, 1.8vw, 0.72rem);
             font-weight: 700;
             color: var(--secondary-color);
             text-transform: uppercase;
             letter-spacing: 0.2px;
-            padding-bottom: 2px;
+            padding-bottom: 3px;
             border-bottom: 1.5px solid var(--primary-color);
             margin-bottom: 2px;
-            white-space: nowrap;
         }
 
         .btn {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 6px 8px;
+            padding: 8px 12px;
             border: 1px solid var(--primary-color);
-            border-radius: 5px;
+            border-radius: 6px;
             background-color: #fff;
             color: var(--primary-color);
             text-decoration: none;
             font-weight: 600;
-            font-size: 0.70rem;
+            font-size: clamp(0.68rem, 2vw, 0.76rem);
             transition: all 0.15s ease-in-out;
             cursor: pointer;
-            box-sizing: border-box;
             width: 100%;
-            min-height: 36px;
+            min-height: 40px;
         }
 
-        .btn:hover {
+        .btn:hover, .btn:active {
             background-color: #f0fdfa;
             border-color: #006666;
             transform: translateY(-1px);
@@ -223,25 +220,25 @@
 
         .btn-full {
             grid-column: 1 / -1;
-            min-height: 34px;
+            min-height: 38px;
         }
 
-        /* Caja de Opinión / Feedback */
+        /* Módulo de Comentarios en 2 líneas */
         .feedback-box {
             grid-column: 1 / -1;
             background-color: var(--feedback-bg);
             border: 1px solid var(--feedback-border);
-            border-radius: 6px;
-            padding: 8px 10px;
-            margin-top: 2px;
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 4px;
             text-align: center;
         }
 
         .feedback-text {
-            font-size: 0.68rem;
+            font-size: clamp(0.65rem, 1.9vw, 0.72rem);
             color: #1e293b;
-            margin-bottom: 6px;
-            line-height: 1.25;
+            margin-bottom: 8px;
+            line-height: 1.35;
             font-weight: 500;
         }
 
@@ -252,17 +249,17 @@
             gap: 6px;
             background-color: var(--secondary-color);
             color: #ffffff;
-            padding: 6px 12px;
-            border-radius: 5px;
+            padding: 8px 14px;
+            border-radius: 6px;
             text-decoration: none;
-            font-size: 0.68rem;
+            font-size: clamp(0.68rem, 2vw, 0.74rem);
             font-weight: 600;
             transition: background-color 0.15s ease;
             width: 100%;
-            box-sizing: border-box;
+            min-height: 38px;
         }
 
-        .btn-feedback:hover {
+        .btn-feedback:hover, .btn-feedback:active {
             background-color: #002244;
         }
 
@@ -270,12 +267,38 @@
             text-align: center;
             font-size: 0.65rem;
             color: var(--text-muted);
-            margin-top: 8px;
+            margin-top: 10px;
             font-weight: 500;
         }
 
         .hidden {
             display: none !important;
+        }
+
+        /* Media Queries para dispositivos ultra pequeños (< 380px) */
+        @media (max-width: 380px) {
+            .content {
+                padding: 10px;
+            }
+
+            .info-row {
+                flex-direction: column;
+                gap: 2px;
+            }
+
+            .info-val {
+                text-align: left;
+            }
+
+            .category-badge-container {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 2px;
+            }
+
+            .category-name {
+                text-align: left;
+            }
         }
     </style>
 </head>
@@ -290,7 +313,7 @@
     <div class="content">
         <!-- Título principal -->
         <h2 id="product-title">Fármacos, Insumos y Dispositivos Médicos</h2>
-        <div class="subtitle">HSJD DIGITAL LINK</div>
+        <div class="subtitle">ESTÁNDAR GS1 DIGITAL LINK</div>
 
         <!-- Cuadro de Datos -->
         <div class="info-box">
@@ -366,10 +389,10 @@
                 <span>➔</span>
             </a>
 
-            <!-- Módulo de Opinión y Solicitud de Información -->
+            <!-- Módulo de Opinión y Solicitud de Información (Ajustado a 2 líneas) -->
             <div class="feedback-box">
                 <div class="feedback-text">
-                    ¿Te gustaría visualizar información que actualmente no se encuentra disponible?<br> 
+                    ¿Te gustaría visualizar información que no se encuentra disponible?<br>
                     Deja tu comentario para analizar la solicitud y nos pondremos en contacto.
                 </div>
                 <a id="btn-feedback-link" href="#" target="_blank" class="btn-feedback">
@@ -407,7 +430,7 @@
     
     // Parámetros de Sugerencia / Contacto
     const formUrl = urlParams.get('form_url');
-    const feedbackMail = urlParams.get('email') || 'mauricio.quiroz@redsalud.gob.cl';
+    const feedbackMail = urlParams.get('email') || 'abastecimiento@hsjd.cl';
 
     // Autodetección de Tipo si no viene especificado
     if (!tipo) {
