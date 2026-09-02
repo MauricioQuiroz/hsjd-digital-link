@@ -449,7 +449,14 @@
         btnFeedback.href = formUrl;
     } else {
         const mailSubject = encodeURIComponent(`Solicitud de Información no disponible - GTIN ${gtin || ''}`);
-        const mailBody = encodeURIComponent(`Estimados,\n\nJunto con saludar, me gustaría solicitar que se habilite la siguiente información/documentación para el producto (${glosa || ''}):\n\n- Comentario / Detalle:\n\nSaludos cordiales,\nCorreo de contacto: `);
+        const mailBody = encodeURIComponent(`Estimados,
+
+Junto con saludar, me gustaría solicitar que se habilite la siguiente información/documentación para el producto (${glosa || ''}):
+
+- Comentario / Detalle:
+
+Saludos cordiales,
+Correo de contacto: `);
         btnFeedback.href = `mailto:${feedbackMail}?subject=${mailSubject}&body=${mailBody}`;
     }
 
