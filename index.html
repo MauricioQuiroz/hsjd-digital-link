@@ -223,7 +223,7 @@
             min-height: 38px;
         }
 
-        /* Módulo de Comentarios en 2 líneas */
+        /* Módulo de Comentarios */
         .feedback-box {
             grid-column: 1 / -1;
             background-color: var(--feedback-bg);
@@ -275,7 +275,7 @@
             display: none !important;
         }
 
-        /* Media Queries para dispositivos ultra pequeños (< 380px) */
+        /* Media Queries para celulares pequeños (< 380px) */
         @media (max-width: 380px) {
             .content {
                 padding: 10px;
@@ -383,13 +383,13 @@
                 </a>
             </div>
 
-            <!-- Botón Ancho Completo Unificado: Alertas y Recalls -->
+            <!-- Botón Ancho Completo Unificado: Alertas Dinámicas -->
             <a href="#" id="btn-alertas" class="btn btn-full">
                 <span>🚨 Alertas Sanitarias (ISP) y Recalls (FDA / ECRI)</span>
                 <span>➔</span>
             </a>
 
-            <!-- Módulo de Opinión y Solicitud de Información (Ajustado a 2 líneas) -->
+            <!-- Módulo de Opinión y Solicitud de Información -->
             <div class="feedback-box">
                 <div class="feedback-text">
                     ¿Te gustaría visualizar información que no se encuentra disponible?<br>
@@ -418,6 +418,7 @@
     const isp = urlParams.get('isp');
     const reff = urlParams.get('reff');
     let tipo = urlParams.get('tipo');
+    const estadoAlerta = urlParams.get('estado_alerta');
 
     // URLs Dinámicas de la Documentación
     const linkISP = urlParams.get('url_isp');
@@ -467,7 +468,26 @@
     assignLink('btn-modo-uso', linkModoUso);
     assignLink('btn-alertas', linkAlertas);
 
-    // 4. Configurar el enlace de Sugerencias / Formulario
+    // 4. Lógica Dinámica para el Botón de Alertas Sanitarias
+    const btnAlertas = document.getElementById('btn-alertas');
+    if (btnAlertas && estadoAlerta) {
+        const estadoUpper = estadoAlerta.toUpperCase();
+        if (estadoUpper.includes('RECIENTE') || estadoUpper.includes('PRESENTA') || estadoUpper.includes('SEGUIMIENTO')) {
+            btnAlertas.style.backgroundColor = '#fef2f2';
+            btnAlertas.style.borderColor = '#ef4444';
+            btnAlertas.style.color = '#b91c1c';
+            btnAlertas.innerHTML = `<span>🚨 Estado Alerta: ${estadoAlerta}</span><span>➔</span>`;
+        } else if (estadoUpper.includes('SIN ALERTA') || estadoUpper.includes('SIN ANTECEDENTES')) {
+            btnAlertas.style.backgroundColor = '#f0fdf4';
+            btnAlertas.style.borderColor = '#22c55e';
+            btnAlertas.style.color = '#15803d';
+            btnAlertas.innerHTML = `<span>✅ Sin Alertas Sanitarias Vigentes</span><span>➔</span>`;
+        } else {
+            btnAlertas.innerHTML = `<span>⚠️ Estado Alerta: ${estadoAlerta}</span><span>➔</span>`;
+        }
+    }
+
+    // 5. Configurar el enlace de Sugerencias / Formulario
     const btnFeedback = document.getElementById('btn-feedback-link');
     if (formUrl) {
         btnFeedback.href = formUrl;
@@ -477,7 +497,7 @@
         btnFeedback.href = `mailto:${feedbackMail}?subject=${mailSubject}&body=${mailBody}`;
     }
 
-    // 5. Lógica de Filtrado por Categoría Visual
+    // 6. Lógica de Filtrado por Categoría Visual
     const colFarmacos = document.getElementById('col-farmacos');
     const colInsumos = document.getElementById('col-insumos');
     const wrapper = document.getElementById('columns-wrapper');
