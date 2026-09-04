@@ -43,6 +43,7 @@
             border: 1px solid var(--border-color);
         }
 
+        /* Corrección de ajuste de Banner de extremo a extremo */
         .banner-container {
             width: 100%;
             background-color: #ffffff;
@@ -50,17 +51,14 @@
             padding: 0;
             margin: 0;
             overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            line-height: 0;
         }
 
         .banner {
             width: 100%;
             height: auto;
-            max-height: 140px;
-            object-fit: contain;
             display: block;
+            object-fit: cover;
         }
 
         .content {
@@ -351,7 +349,7 @@
         <div class="columns-container" id="columns-wrapper">
             <!-- Columna Fármacos -->
             <div class="column" id="col-farmacos">
-                <div class="col-title">💊 Fármacos</div>
+                <div class="col-title"></div>
                 <a href="#" id="btn-isp" class="btn">
                     <span>📑 Ficha Técnica Registro ISP</span>
                     <span>➔</span>
