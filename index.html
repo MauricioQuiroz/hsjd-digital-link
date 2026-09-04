@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trazabilidad Sanitaria - GS1 Digital Link</title>
+    <title>Trazabilidad Sanitaria - HSJD Digital Link</title>
     <style>
         :root {
             --primary-color: #008080;
@@ -313,7 +313,7 @@
     <div class="content">
         <!-- Título principal -->
         <h2 id="product-title">Fármacos, Insumos y Dispositivos Médicos</h2>
-        <div class="subtitle">ESTÁNDAR GS1 DIGITAL LINK</div>
+        <div class="subtitle">HSJD DIGITAL LINK</div>
 
         <!-- Cuadro de Datos -->
         <div class="info-box">
@@ -385,7 +385,7 @@
 
             <!-- Botón Ancho Completo Unificado: Alertas Dinámicas -->
             <a href="#" id="btn-alertas" class="btn btn-full">
-                <span>🚨 Alertas Sanitarias (ISP) y Recalls (FDA / ECRI)</span>
+                <span>🚨 Alertas Sanitarias y Recalls</span>
                 <span>➔</span>
             </a>
 
@@ -431,7 +431,7 @@
     
     // Parámetros de Sugerencia / Contacto
     const formUrl = urlParams.get('form_url');
-    const feedbackMail = urlParams.get('email') || 'abastecimiento@hsjd.cl';
+    const feedbackMail = urlParams.get('email') || 'mauricio.quiroz@redsalud.gob.cl';
 
     // Autodetección de Tipo si no viene especificado
     if (!tipo) {
@@ -468,22 +468,42 @@
     assignLink('btn-modo-uso', linkModoUso);
     assignLink('btn-alertas', linkAlertas);
 
-    // 4. Lógica Dinámica para el Botón de Alertas Sanitarias
+    // 4. Lógica Dinámica de Alertas Sanitarias (4 Categorías)
     const btnAlertas = document.getElementById('btn-alertas');
     if (btnAlertas && estadoAlerta) {
         const estadoUpper = estadoAlerta.toUpperCase();
-        if (estadoUpper.includes('RECIENTE') || estadoUpper.includes('PRESENTA') || estadoUpper.includes('SEGUIMIENTO')) {
+
+        // 🔴 Nivel 1: Recientes (hasta 3 meses)
+        if (estadoUpper.includes('RECIENTE') || estadoUpper.includes('MENOR A 3')) {
             btnAlertas.style.backgroundColor = '#fef2f2';
             btnAlertas.style.borderColor = '#ef4444';
             btnAlertas.style.color = '#b91c1c';
-            btnAlertas.innerHTML = `<span>🚨 Estado Alerta: ${estadoAlerta}</span><span>➔</span>`;
-        } else if (estadoUpper.includes('SIN ALERTA') || estadoUpper.includes('SIN ANTECEDENTES')) {
+            btnAlertas.innerHTML = `<span>🚨 Alerta Sanitaria RECIENTE (${estadoAlerta})</span><span>➔</span>`;
+        } 
+        // 🟠 Nivel 2: En Seguimiento (3 meses a 1 año)
+        else if (estadoUpper.includes('SEGUIMIENTO') || estadoUpper.includes('ENTRE 3') || estadoUpper.includes('MEDIO')) {
+            btnAlertas.style.backgroundColor = '#fff7ed';
+            btnAlertas.style.borderColor = '#f97316';
+            btnAlertas.style.color = '#c2410c';
+            btnAlertas.innerHTML = `<span>⚠️ Alerta EN SEGUIMIENTO (${estadoAlerta})</span><span>➔</span>`;
+        } 
+        // 🟡 Nivel 3: Histórica (más de 1 año)
+        else if (estadoUpper.includes('HISTÓRICA') || estadoUpper.includes('HISTORICA') || estadoUpper.includes('MAYOR A 1')) {
+            btnAlertas.style.backgroundColor = '#fefce8';
+            btnAlertas.style.borderColor = '#eab308';
+            btnAlertas.style.color = '#a16207';
+            btnAlertas.innerHTML = `<span>🟡 Alerta HISTÓRICA (${estadoAlerta})</span><span>➔</span>`;
+        } 
+        // 🟢 Nivel 4: Sin Alertas
+        else if (estadoUpper.includes('SIN ALERTA') || estadoUpper.includes('SIN ANTECEDENTES')) {
             btnAlertas.style.backgroundColor = '#f0fdf4';
             btnAlertas.style.borderColor = '#22c55e';
             btnAlertas.style.color = '#15803d';
             btnAlertas.innerHTML = `<span>✅ Sin Alertas Sanitarias Vigentes</span><span>➔</span>`;
-        } else {
-            btnAlertas.innerHTML = `<span>⚠️ Estado Alerta: ${estadoAlerta}</span><span>➔</span>`;
+        } 
+        // Fallback genérico
+        else {
+            btnAlertas.innerHTML = `<span>🚨 Estado Alerta: ${estadoAlerta}</span><span>➔</span>`;
         }
     }
 
@@ -493,7 +513,7 @@
         btnFeedback.href = formUrl;
     } else {
         const mailSubject = encodeURIComponent(`Solicitud de Información no disponible - GTIN ${gtin || ''}`);
-        const mailBody = encodeURIComponent(`Estimados,\n\nJunto con saludar, me gustaría solicitar que se habilite la siguiente información/documentación para el producto (${glosa || ''}):\n\n- Comentario / Detalle:\n\nSaludos cordiales,\nCorreo de contacto: `);
+        const mailBody = encodeURIComponent(`Estimados,\n\nJunto con saludar, me gustaría solicitar que se habilite la siguiente información para el producto (${glosa || ''}):\n\n- Comentario / Detalle:\n\nSaludos cordiales,\nCorreo de contacto: `);
         btnFeedback.href = `mailto:${feedbackMail}?subject=${mailSubject}&body=${mailBody}`;
     }
 
