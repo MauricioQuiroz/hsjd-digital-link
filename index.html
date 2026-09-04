@@ -32,7 +32,6 @@
             min-height: 100vh;
         }
 
-        /* Contenedor adaptativo para todo tipo de pantallas */
         .container {
             width: 100%;
             max-width: 500px;
@@ -43,7 +42,6 @@
             border: 1px solid var(--border-color);
         }
 
-        /* Corrección de ajuste de Banner de extremo a extremo */
         .banner-container {
             width: 100%;
             background-color: #ffffff;
@@ -84,7 +82,6 @@
             margin-bottom: 10px;
         }
 
-        /* Cuadro de Datos Responsive */
         .info-box {
             background-color: #f8fafc;
             border-radius: 8px;
@@ -131,7 +128,6 @@
             font-weight: 700;
         }
 
-        /* Badge de Categoría */
         .category-badge-container {
             margin-bottom: 10px;
             display: flex;
@@ -167,7 +163,6 @@
             letter-spacing: 0.4px;
         }
 
-        /* Grid Dinámico de Botones */
         .columns-container {
             display: grid;
             grid-template-columns: 1fr;
@@ -216,12 +211,20 @@
             transform: translateY(-1px);
         }
 
+        .btn-disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+            background-color: #f1f5f9;
+            border-color: #cbd5e1;
+            color: #94a3b8;
+        }
+
         .btn-full {
             grid-column: 1 / -1;
             min-height: 38px;
         }
 
-        /* Módulo de Comentarios */
         .feedback-box {
             grid-column: 1 / -1;
             background-color: var(--feedback-bg);
@@ -273,7 +276,6 @@
             display: none !important;
         }
 
-        /* Media Queries para celulares pequeños (< 380px) */
         @media (max-width: 380px) {
             .content {
                 padding: 10px;
@@ -406,10 +408,39 @@
 </div>
 
 <script>
-    // 1. Lectura completa de Parámetros URL
+    // 1. Funciones auxiliares para Sanatización y Decodificación de URLs
+    function sanitizeUrl(rawUrl) {
+        if (!rawUrl || rawUrl === 'N/A' || rawUrl === 'No detectado' || rawUrl === 'SIN ANTECEDENTES') return null;
+        
+        try {
+            // Decodifica %20, %3A, %2F etc.
+            let decoded = decodeURIComponent(rawUrl.trim());
+            
+            // Si venía doblemente codificado (ej. desde Excel):
+            if (decoded.includes('%3A') || decoded.includes('%2F')) {
+                decoded = decodeURIComponent(decoded);
+            }
+
+            // Manejo especial si la URL venía formateada con prefijo 'read:'
+            if (decoded.startsWith('read:')) {
+                decoded = decoded.replace('read:', '').trim();
+            }
+
+            // Asegura protocolo
+            if (!decoded.startsWith('http://') && !decoded.startsWith('https://') && !decoded.startsWith('mailto:')) {
+                decoded = 'https://' + decoded;
+            }
+
+            return decoded;
+        } catch (e) {
+            console.warn('Error al decodificar URL:', rawUrl, e);
+            return rawUrl;
+        }
+    }
+
+    // 2. Lectura de Parámetros URL
     const urlParams = new URLSearchParams(window.location.search);
     
-    // Atributos del Producto
     const glosa = urlParams.get('glosa');
     const gtin = urlParams.get('gtin');
     const codInterno = urlParams.get('cod_interno');
@@ -418,17 +449,15 @@
     let tipo = urlParams.get('tipo');
     const estadoAlerta = urlParams.get('estado_alerta');
 
-    // URLs Dinámicas de la Documentación
-    const linkISP = urlParams.get('url_isp');
-    const linkVademecum = urlParams.get('url_vademecum');
-    const linkMedscape = urlParams.get('url_medscape');
-    const linkFabricante = urlParams.get('url_fabricante');
-    const linkFDA = urlParams.get('url_fda');
-    const linkModoUso = urlParams.get('url_modo_uso');
-    const linkAlertas = urlParams.get('url_alertas');
-    
-    // Parámetros de Sugerencia / Contacto
-    const formUrl = urlParams.get('form_url');
+    // URLs Sanitizadas
+    const linkISP = sanitizeUrl(urlParams.get('url_isp'));
+    const linkVademecum = sanitizeUrl(urlParams.get('url_vademecum'));
+    const linkMedscape = sanitizeUrl(urlParams.get('url_medscape'));
+    const linkFabricante = sanitizeUrl(urlParams.get('url_fabricante'));
+    const linkFDA = sanitizeUrl(urlParams.get('url_fda'));
+    const linkModoUso = sanitizeUrl(urlParams.get('url_modo_uso'));
+    const linkAlertas = sanitizeUrl(urlParams.get('url_alertas'));
+    const formUrl = sanitizeUrl(urlParams.get('form_url'));
     const feedbackMail = urlParams.get('email') || 'mauricio.quiroz@redsalud.gob.cl';
 
     // Autodetección de Tipo si no viene especificado
@@ -440,21 +469,26 @@
         }
     }
 
-    // 2. Renderizado de Datos del Cuadro Principal
+    // 3. Renderizado de Datos del Cuadro Principal
     if (glosa) document.getElementById('glosa-val').innerText = glosa;
     if (gtin) document.getElementById('gtin-val').innerText = gtin;
     if (codInterno) document.getElementById('cod-interno-val').innerText = codInterno;
     if (isp) document.getElementById('isp-val').innerText = isp;
     if (reff) document.getElementById('reff-val').innerText = reff;
 
-    // 3. Asignación Dinámica de Enlaces a los Botones
+    // 4. Asignación Dinámica de Enlaces a los Botones
     function assignLink(elementId, url) {
+        const btn = document.getElementById(elementId);
+        if (!btn) return;
+
         if (url) {
-            const btn = document.getElementById(elementId);
-            if (btn) {
-                btn.href = url;
-                btn.target = "_blank";
-            }
+            btn.href = url;
+            btn.target = "_blank";
+            btn.classList.remove('btn-disabled');
+        } else {
+            btn.removeAttribute('href');
+            btn.classList.add('btn-disabled');
+            btn.title = 'Información no disponible temporalmente';
         }
     }
 
@@ -466,46 +500,41 @@
     assignLink('btn-modo-uso', linkModoUso);
     assignLink('btn-alertas', linkAlertas);
 
-    // 4. Lógica Dinámica de Alertas Sanitarias (4 Categorías)
+    // 5. Lógica Dinámica de Alertas Sanitarias
     const btnAlertas = document.getElementById('btn-alertas');
     if (btnAlertas && estadoAlerta) {
         const estadoUpper = estadoAlerta.toUpperCase();
 
-        // 🔴 Nivel 1: Recientes (hasta 3 meses)
         if (estadoUpper.includes('RECIENTE') || estadoUpper.includes('MENOR A 3')) {
             btnAlertas.style.backgroundColor = '#fef2f2';
             btnAlertas.style.borderColor = '#ef4444';
             btnAlertas.style.color = '#b91c1c';
             btnAlertas.innerHTML = `<span>🚨 Alerta Sanitaria RECIENTE (${estadoAlerta})</span><span>➔</span>`;
         } 
-        // 🟠 Nivel 2: En Seguimiento (3 meses a 1 año)
         else if (estadoUpper.includes('SEGUIMIENTO') || estadoUpper.includes('ENTRE 3') || estadoUpper.includes('MEDIO')) {
             btnAlertas.style.backgroundColor = '#fff7ed';
             btnAlertas.style.borderColor = '#f97316';
             btnAlertas.style.color = '#c2410c';
             btnAlertas.innerHTML = `<span>⚠️ Alerta EN SEGUIMIENTO (${estadoAlerta})</span><span>➔</span>`;
         } 
-        // 🟡 Nivel 3: Histórica (más de 1 año)
         else if (estadoUpper.includes('HISTÓRICA') || estadoUpper.includes('HISTORICA') || estadoUpper.includes('MAYOR A 1')) {
             btnAlertas.style.backgroundColor = '#fefce8';
             btnAlertas.style.borderColor = '#eab308';
             btnAlertas.style.color = '#a16207';
             btnAlertas.innerHTML = `<span>🟡 Alerta HISTÓRICA (${estadoAlerta})</span><span>➔</span>`;
         } 
-        // 🟢 Nivel 4: Sin Alertas
         else if (estadoUpper.includes('SIN ALERTA') || estadoUpper.includes('SIN ANTECEDENTES')) {
             btnAlertas.style.backgroundColor = '#f0fdf4';
             btnAlertas.style.borderColor = '#22c55e';
             btnAlertas.style.color = '#15803d';
             btnAlertas.innerHTML = `<span>✅ Sin Alertas Sanitarias Vigentes</span><span>➔</span>`;
         } 
-        // Fallback genérico
         else {
             btnAlertas.innerHTML = `<span>🚨 Estado Alerta: ${estadoAlerta}</span><span>➔</span>`;
         }
     }
 
-    // 5. Configurar el enlace de Sugerencias / Formulario
+    // 6. Configuración del Botón de Feedback / Formulario
     const btnFeedback = document.getElementById('btn-feedback-link');
     if (formUrl) {
         btnFeedback.href = formUrl;
@@ -515,7 +544,7 @@
         btnFeedback.href = `mailto:${feedbackMail}?subject=${mailSubject}&body=${mailBody}`;
     }
 
-    // 6. Lógica de Filtrado por Categoría Visual
+    // 7. Filtrado Visual por Categoría
     const colFarmacos = document.getElementById('col-farmacos');
     const colInsumos = document.getElementById('col-insumos');
     const wrapper = document.getElementById('columns-wrapper');
@@ -537,17 +566,10 @@
         catVal.innerText = 'BÚSQUEDA GENERAL / NO DEFINIDA';
     }
 
-    // =========================================================================
-    // 7. LIMPIEZA AUTOMÁTICA DE LA BARRA DE DIRECCIONES (OPCIÓN 1 - GS1 LINK)
-    // =========================================================================
+    // 8. Reescritura Estética de la barra de direcciones GS1 Digital Link
     if (window.location.search) {
-        // Asigna el GTIN recibido o el código interno si no hay GTIN
         const gtinFormateado = (gtin && gtin !== 'SIN ANTECEDENTES') ? gtin : (codInterno || '00000000000000');
-        
-        // Construye la URL estética GS1 Digital Link
         const urlLimpiaGS1 = window.location.pathname + '#/01/' + encodeURIComponent(gtinFormateado);
-        
-        // Reemplaza la URL en la barra del navegador sin recargar la página
         window.history.replaceState({}, document.title, urlLimpiaGS1);
     }
 </script>
